@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HR Operations Manager</title>
+
+<style>
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #f4f6f9;
+}
+
+/* WATERMARK */
+.page::before {
+    content: "HR SYSTEM";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 80px;
+    color: rgba(0,0,0,0.05);
+}
+
+/* LOGIN */
+#loginPage {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to right, #2c3e50, #4ca1af);
+}
+
+.login-box {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+}
+
+input, select {
+    width: 90%;
+    padding: 8px;
+    margin: 8px;
+}
+
+button {
+    padding: 8px 12px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+ footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+button:hover {
+    opacity: 0.9;
+}
+
+/* LOGOUT */
+.logout {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    background: #e74c3c;
+}
+
+/* PAGES */
+#hrPage, #applicantPage {
+    display: none;
+}
+
+/* HEADER */
+header {
+    background: #2c3e50;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    position: relative;
+}
+
+/* CARD */
+.card {
+    background: white;
+    padding: 15px;
+    margin: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* SMALL ICON IMAGES */
+.card img {
+    display: block;
+    margin: 10px auto;
+    width: 80px;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+}
+
+tr:hover {
+    background: #f2f2f2;
+}
+
+th {
+    color: white;
+}
+</style>
+
+<script>
+// Password validation
+function validatePassword(pwd) {
+    let regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
+    return regex.test(pwd);
+}
+
+function login() {
+    let role = document.getElementById("role").value;
+
+    if(role === "") {
+        alert("Select a role first");
+        return;
+    }
+
+    if(role === "HR") {
+        let user = document.getElementById("hrUsername").value.trim();
+        let pass = document.getElementById("hrPassword").value.trim();
+
+        if(user === "hr" && pass === "1234") {
+            document.getElementById("loginPage").style.display = "none";
+            document.getElementById("hrPage").style.display = "block";
+        } else {
+            alert("Wrong HR credentials (Use: hr / 1234)");
+        }
+        return;
+    }
+
+    if(role === "Applicant") {
+        let name = document.getElementById("appName").value.trim();
+        let email = document.getElementById("appEmail").value.trim();
+        let pass = document.getElementById("appPassword").value.trim();
+
+        if(name === "" || email === "" || pass === "") {
+            alert("Fill all fields");
+            return;
+        }
+
+        if(!validatePassword(pass)) {
+            alert("Password must be strong (8+ chars, letter, number, special)");
+            return;
+        }
+
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("applicantPage").style.display = "block";
+    }
+}
+
+function logout() {
+    document.getElementById("hrPage").style.display = "none";
+    document.getElementById("applicantPage").style.display = "none";
+    document.getElementById("loginPage").style.display = "flex";
+
+    document.querySelectorAll("input").forEach(i => i.value = "");
+    document.getElementById("role").value = "";
+    document.getElementById("hrFields").style.display = "none";
+    document.getElementById("applicantFields").style.display = "none";
+}
+
+function toggleFields() {
+    let role = document.getElementById("role").value;
+
+    document.getElementById("hrFields").style.display =
+        (role === "HR") ? "block" : "none";
+
+    document.getElementById("applicantFields").style.display =
+        (role === "Applicant") ? "block" : "none";
+}
+</script>
+
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage">
+    <div class="login-box">
+        <h2>Login</h2>
+
+        <select id="role" onchange="toggleFields()">
+            <option value="">Select Role</option>
+            <option value="HR">HR</option>
+            <option value="Applicant">Applicant</option>
+        </select>
+
+        <div id="hrFields" style="display:none;">
+            <input type="text" id="hrUsername" placeholder="HR Username">
+            <input type="password" id="hrPassword" placeholder="Password">
+        </div>
+
+        <div id="applicantFields" style="display:none;">
+            <input type="text" id="appName" placeholder="Name">
+            <input type="email" id="appEmail" placeholder="Email">
+            <input type="password" id="appPassword" placeholder="Password">
+        </div>
+
+        <button onclick="login()">Login</button>
+    </div>
+</div>
+
+<!-- HR DASHBOARD -->
+<div id="hrPage" class="page">
+<header>
+    <h1>HR Dashboard</h1>
+    <button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<div class="card">
+<h2>📄 Pending Resumes</h2>
+<p>Review and take action on new applications.</p>
+<img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+<table border="1">
+<tr style="background:#2c3e50;">
+<th>Name</th><th>Position</th><th>Status</th><th>Action</th>
+</tr>
+<tr>
+<td>Karthik</td><td>Java Developer</td><td>Pending</td>
+<td><button>Approve</button> <button style="background:red;">Reject</button></td>
+</tr>
+<tr>
+<td>Piyush</td><td>Web Designer</td><td>Pending</td>
+<td><button>Approve</button> <button style="background:red;">Reject</button></td>
+</tr>
+</table>
+</div>
+
+<div class="card">
+<h2>✅ Verified Candidates</h2>
+<p>Successfully processed applications.</p>
+<img src="https://cdn-icons-png.flaticon.com/512/190/190411.png">
+
+<table border="1">
+<tr style="background:#27ae60;">
+<th>Name</th><th>Position</th><th>Status</th>
+</tr>
+<tr><td>Raghava</td><td>Software Engineer</td><td>Selected</td></tr>
+<tr><td>Jonus</td><td>UI Designer</td><td>Interview Passed</td></tr>
+</table>
+</div>
+
+</div>
+
+<!-- APPLICANT PAGE -->
+<div id="applicantPage" class="page">
+<header>
+    <h1>Applicant Portal</h1>
+    <button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<div class="card">
+<h2>📝 Apply for Job</h2>
+<p>Submit your application for available roles.</p>
+<img src="https://cdn-icons-png.flaticon.com/512/942/942748.png">
+
+<input type="text" placeholder="Name"><br><br>
+<input type="email" placeholder="Email"><br><br>
+<p>UPLOAD YOUR RESUME</P>
+<input type="file"><br><br>
+<button>Submit Application</button>
+</div>
+
+<div class="card">
+<h2>💡 Tips</h2>
+<p>Improve your chances:</p>
+<img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png">
+
+<ul>
+<li>Use updated resume</li>
+<li>Prepare for interviews</li>
+<li>Check emails regularly</li>
+</ul>
+</div>
+
+</div>
+<footer>
+    <p>© V.RAGHAVA(25955A1206) 2026 copyrights reserved(HR Operations Manager System)</p>
+</footer>
+
+</body>
+</html>
